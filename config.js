@@ -76,7 +76,7 @@ function setConfig() {
             }
         }
         if(!match) {
-            console.log(`invalid key: ${myArgs[2]}, try again.`)
+            console.log(`key "${myArgs[2]}" invalid, try again.`)
        }
     });
 }
