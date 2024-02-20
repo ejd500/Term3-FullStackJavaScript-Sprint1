@@ -16,9 +16,9 @@ function configApp() {
         resetConfig();
         break;
     case '--set':
-        //   if(DEBUG) console.log('--set');
-        //   setConfig();
-        //   break;
+        if(DEBUG) console.log('--set');
+        setConfig();
+        break;
     case '--help':
     case '--h':
     default:
@@ -49,34 +49,37 @@ function resetConfig() {
      });
 }
 
-// function setConfig() {
-//     if(DEBUG) console.log('config.setConfig()');
-//     if(DEBUG) console.log(myArgs);
+function setConfig() {
+    if(DEBUG) console.log('config.setConfig()');
+    if(DEBUG) console.log(myArgs);
 
-//     let match = false;
-//     fs.readFile(__dirname + "/json/config.json", (error, data) => {
-//         if(error) throw error;         
-//         if(DEBUG) console.log(JSON.parse(data));
-//         let cfg = JSON.parse(data);
-//         for(let key of Object.keys(cfg)){
-//             if(DEBUG) console.log(`K E Y: ${key}`);
-//             if(key === myArgs[2]) {
-//                 cfg[key] = myArgs[3];
-//                 match = true;
-//             }
-//         }
-//         if(!match) {
-//             console.log(`invalid key: ${myArgs[2]}, try another.`)
-//        }
-//         if(DEBUG) console.log(cfg);
-//         data = JSON.stringify(cfg, null, 2);
-//         // looks like this code is writing the file again even if there is
-//         fs.writeFile(__dirname + '/json/config.json', data, (error) => {
-//             if (error) throw error;
-//             if(DEBUG) console.log('Config file successfully updated.');
-//         });
-//     });
-// }
+    let match = false;
+    fs.readFile(__dirname + "/json/config.json", (error, data) => {
+        if(error) throw error;         
+        if(DEBUG) console.log(JSON.parse(data));
+        let config = JSON.parse(data);
+        for(let key of Object.keys(config)){
+            if(DEBUG) console.log(`K E Y: ${key}`);
+            if(key === myArgs[2]) {
+                match = true;
+                if (myArgs[3] != null){
+                    config[key] = myArgs[3];
+                    if(DEBUG) console.log(config);
+                    data = JSON.stringify(config, null, 2);
+                    fs.writeFile(__dirname + '/json/config.json', data, (error) => {
+                        if (error) throw error;
+                        if(DEBUG) console.log('Config file successfully updated.');
+                    });
+                } else{
+                    console.log(`value "${myArgs[3]}" invalid, try another.`)
+                }
+            }
+        }
+        if(!match) {
+            console.log(`invalid key: ${myArgs[2]}, try again.`)
+       }
+    });
+}
 
 
 module.exports = {
