@@ -224,4 +224,5 @@ function createFiles() {
 
 module.exports = {
     initializeApp,
+    configjson
 };
