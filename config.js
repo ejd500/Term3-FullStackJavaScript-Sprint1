@@ -2,6 +2,7 @@ const fs = require('fs');
 const myArgs = process.argv.slice(2);
 
 const { configjson } = require('./init.js');
+const { displayInitConfigStatus } = require('./init.js');
 
 function configApp() {
     if(DEBUG) console.log('configApp()');
@@ -22,10 +23,22 @@ function configApp() {
     case '--help':
     case '--h':
     default:
-        fs.readFile(__dirname + "/docs/config-help.txt", (error, data) => {
-            if(error) throw error;              
-            console.log(data.toString());
-        });
+        try {
+            fs.readFile(__dirname + "/docs/config-help.txt", (error, data) => {
+                if (error) {
+                    if (error.code === 'ENOENT') {
+                        console.log("In order to manage the configuration settings, you must first finish initializing the app by running `node myapp init --all`.");
+                    } else {
+                        console.log(error);
+                    }
+                } else {
+                    console.log(data.toString());
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        // displayInitConfigStatus();
     }
 }
 

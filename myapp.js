@@ -2,7 +2,7 @@ global.DEBUG = true;
 
 const fs = require("fs");
 
-const { initializeApp } = require('./init.js');
+const { initializeApp, displayInitConfigStatus } = require('./init.js');
 const { configApp } = require('./config.js')
 
 const allHelp = `myapp <command> <option>
@@ -34,6 +34,9 @@ myapp token --search p <phone>          fetches a token for a given phone number
 const myArgs = process.argv.slice(2);
 // console.log(myArgs);
 
+console.log("\nWelcome to myApp!\n")
+
+
 if(DEBUG) if(myArgs.length >= 1) console.log('the index args = ', myArgs);
 
 switch (myArgs[0]) {
@@ -55,4 +58,9 @@ switch (myArgs[0]) {
   case '--h':
   default:
       console.log(allHelp);
+      displayInitConfigStatus();
+      
+
+
 }
+
