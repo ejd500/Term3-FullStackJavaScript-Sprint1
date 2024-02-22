@@ -84,7 +84,7 @@ myapp token --search e <email>          fetches a token for a given email
 myapp token --search p <phone>          fetches a token for a given phone number
 `;
 
-const files = ['config.json', 'allHelp.txt', 'initHelp.txt', 'configHelp.txt', 'tokenHelp.txt']
+const files = ['config.json', 'token.json', 'allHelp.txt', 'initHelp.txt', 'configHelp.txt', 'tokenHelp.txt']
 
 
 const myArgs = process.argv.slice(2);
@@ -313,6 +313,13 @@ function displayInitConfigStatus(){
         fileCount++;
     } else{
         // console.log(`The file called "config.json" has yet to be created.`)
+    }
+
+    if(fs.existsSync(path.join(__dirname, "json", "tokens.json"))){
+        // console.log(`The file called "tokens.json" already exists.`)
+        fileCount++;
+    } else{
+        // console.log(`The file called "tokens.json" has yet to be created.`)
     }
 
     if (fileCount == files.length && subfolderCnt == subfolders.length && folderCnt == folders.length){
