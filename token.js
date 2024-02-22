@@ -1,68 +1,70 @@
-const fs = require('fs');
+const fs = require('fs').promises; 
 
 const crc32 = require('crc/crc32');
 const { format } = require('date-fns');
 
 const myArgs = process.argv.slice(2);
 
-function tokenList() {
+async function tokenList() {
     if (DEBUG) console.log('token.tokenList()');
-    fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
-        if (error) throw error; 
-        let tokens = JSON.parse(data);
-        console.log();
-        console.log('** Username/Token List **')
-        console.log('-------------------------')
-        tokens.forEach(obj => {
-            console.log(`* ${obj.username} / ${obj.token} / ${obj.phone} / ${obj.email}`);
-        });
-    });
+    try{
+       let data = await fs.readFile(__dirname + '/json/tokens.json', 'utf-8');
+            let tokens = JSON.parse(data);
+            console.log();
+            console.log('** Username/Token List **');
+            console.log('-------------------------');
+            tokens.forEach(token => {
+                console.log(`* ${token.username} / ${token.token} / ${token.phone} / ${token.email}`);
+            });
+    }catch(error){
+        console.log('Error retreiving token list', error);
+    };
 };
 
-function tokenCount() {
+async function tokenCount() {
     if (DEBUG) console.log('token.tokenCount()');
-    fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
-        if (error) throw error;
-        let tokens = JSON.parse(data);
-        console.log(`Total Tokens Count: ${tokens.length - 1}`); // -1 to remove template entry
-    });
+    try{
+        let data = await fs.readFile(__dirname + '/json/tokens.json', 'utf-8');
+            let tokens = JSON.parse(data);
+            console.log(`Total Tokens Count: ${tokens.length - 1}`); // -1 to remove template entry
+    }catch(error){
+        console.log('Error retreiving token count', error);
+    };
 };
 
-function newToken(username) {
+async function newToken(username) {
     if (DEBUG) console.log('token.newToken()');
-        let newToken = JSON.parse(`{
-                "created": "1969-01-31 12:30:00",
-                "username": "username",
-                "email": "user@example.com",
-                "phone": "5556597890",
-                "token": "token",
-                "expires": "1969-02-03 12:30:00",
-                "confirmed": "tbd"
-            }`);
+    let newToken = JSON.parse(`{
+            "created": "1969-01-31 12:30:00",
+            "username": "username",
+            "email": "user@example.com",
+            "phone": "5556597890",
+            "token": "token",
+            "expires": "1969-02-03 12:30:00",
+            "confirmed": "tbd"
+        }`);
+
+    try{
+        let now = new Date();
+        let expires = addDays(now, 3);
     
-    let now = new Date();
-    let expires = addDays(now, 3);
-  
-    newToken.created = `${format(now, 'yyyy-MM-dd HH:mm:ss')}`;
-    newToken.username = username;
-    newToken.token = crc32(username).toString(16);
-    newToken.expires = `${format(expires, 'yyyy-MM-dd HH:mm:ss')}`;
-  
-    fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
-        if (error) throw error; 
+        newToken.created = `${format(now, 'yyyy-MM-dd HH:mm:ss')}`;
+        newToken.username = username;
+        newToken.token = crc32(username).toString(16);
+        newToken.expires = `${format(expires, 'yyyy-MM-dd HH:mm:ss')}`;
+    
+        let data = await fs.readFile(__dirname + '/json/tokens.json', 'utf-8');
         let tokens = JSON.parse(data);
         tokens.push(newToken);
-        userTokens = JSON.stringify(tokens);
+        let userTokens = JSON.stringify(tokens);
     
-        fs.writeFile(__dirname + '/json/tokens.json', userTokens, (error) => {
-            if (error){ 
-                console.log(error);
-            }else { 
-                console.log(`New token ${newToken.token} created for ${username} is set to expire on ${expires}.`);
-            };
-        });        
-    });
-    return newToken.token;
+        await fs.writeFile(__dirname + '/json/tokens.json', userTokens);
+        console.log(`New token ${newToken.token} created for ${username} is set to expire on ${expires}.`);
+        return newToken.token;
+
+    }catch(error){
+        console.log('Error creating new token', error);
+    };
 };
 
 function addDays(date, days) {
@@ -71,12 +73,14 @@ function addDays(date, days) {
     return result;
 };
 
-function updateEntry(type, username, newValue) {
-    fs.readFile(__dirname + '/json/tokens.json', 'utf-8', (error, data) => {
-        if (error) throw error;
+async function updateTokens(type, username, newValue) {
+    if(DEBUG)console.log('token - token.uodateEntry()')
+    try{
+        let data = await fs.readFile(__dirname + '/json/tokens.json', 'utf-8');
         let tokens = JSON.parse(data);
 
         // Find the user based on username
+        
         let user = tokens.find(obj => obj.username === username);
 
         if(user) {
@@ -92,22 +96,71 @@ function updateEntry(type, username, newValue) {
                     return;
             };
           
-            fs.writeFile(__dirname + '/json/tokens.json', JSON.stringify(tokens, null, 2), (error) => {
-                if(error) {
-                    console.error(error);
-                }else {
-                    console.log(`Entry for ${username} updated successfully.`);
-                };
-            });
-        }else {
+                await fs.writeFile(__dirname + '/json/tokens.json', JSON.stringify(tokens, null, 2));
+                console.log(`Entry for ${username} updated successfully.`);
+        
+        }else{
             console.log(`Token entry for ${username} not found.`);
         };
-    });
+    }catch(error){
+        console.log('Error updating user', error);
+    };
+};
+
+async function searchTokens(searchType, userEntry) {
+    try{
+        let data = await fs.readFile(__dirname + '/json/tokens.json', 'utf-8');
+        let tokens = JSON.parse(data);
+
+        // Filter users based on the search type
+
+        let filteredUsers = tokens.filter(token => {
+            switch (searchType) {
+                case 'u': 
+                    return token.username === userEntry;
+                case 'e': 
+                    return token.email === userEntry;
+                case 'p': 
+                    return token.phone === userEntry;
+                default:
+                    console.log('Invalid search type.[u/e/p]');
+                    return false;
+            };
+        });
+
+        switch (searchType) {
+            case 'u':
+                console.log(`Search results for username: ${userEntry}`);
+                console.log('----------------------------')
+                break;
+            case 'e':
+                console.log(`Search results for email: ${userEntry}`);
+                console.log('-------------------------')
+                break;
+            case 'p':
+                console.log(`Search results for phone number: ${userEntry}`);
+                console.log('--------------------------------')
+                break;
+            default:
+                console.log('Invalid search type.');
+                return;
+        };
+
+        if (filteredUsers.length === 0) {
+            console.log('No matching users found.');
+        }else {
+            filteredUsers.forEach(token => {
+                console.log(`Username: ${token.username} / Token: ${token.token} / Phone: ${token.phone} / Email: ${token.email}`);
+            });
+        };
+    }catch(error){
+        console.log('Error searching tokens', error);
+    };
 };
 
 const command = myArgs[1];
   
-function tokenApp() {
+async function tokenApp() {
     if (DEBUG) console.log('tokenApp()');
   
     switch (command) {
@@ -121,11 +174,11 @@ function tokenApp() {
             break; 
     case '--new':
         if (myArgs.length < 3) {
-            console.log('invalid syntax. node myapp token --new [username]')
+            console.log('invalid syntax. Usage: node myapp token --new [username]');
         }else {
             if(DEBUG) console.log('--new');
             newToken(myArgs[2]);
-        }
+        };
         break;
     case '--upd':
         const type = myArgs[2];
@@ -133,16 +186,27 @@ function tokenApp() {
             console.log ('invalid syntax. Usage: node myapp token --upd [p/e] [username] [new value]')
         }else {        
             if (DEBUG) console.log (`--upd ${type}`)
-            updateEntry(type, myArgs[3], myArgs[4]);
-        } 
+            updateTokens(type, myArgs[3], myArgs[4]);
+        }; 
+        break;
+    case '--search':
+        const searchType = myArgs[2];
+        if(myArgs.length <4 || (searchType !== 'u' && searchType !== 'p' && searchType !== 'e')) {
+            console.log ('invalid syntax. Usage: node myapp token --search [u/p/e] [alue]')
+        }else {        
+            if (DEBUG) console.log (`--upd ${searchType}`)
+            searchTokens(searchType, myArgs[3]);
+        }; 
         break;
     case '--help':
     case '--h':
     default:
-        fs.readFile(__dirname + "/docs/token-help.txt", (error, data) => {
-            if (error) throw error;              
-                console.log(data.toString());
-        });
+        try{
+            let data = await fs.readFile(__dirname + "/docs/token-help.txt");             
+            console.log(data.toString());
+        }catch(error){
+            console.log('Error displaying help', error);
+        };
     };
 };
   
