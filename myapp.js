@@ -1,9 +1,10 @@
-global.DEBUG = true;
+global.DEBUG = false;
 
 const fs = require("fs");
 
 const { initializeApp, displayInitConfigStatus } = require('./init.js');
-const { configApp } = require('./config.js')
+const { configApp } = require('./config.js');
+const { tokenApp } = require('./token.js');
 
 const allHelp = `myapp <command> <option>
 
@@ -50,17 +51,15 @@ switch (myArgs[0]) {
       if(DEBUG) console.log(myArgs[0], ' - display the configuration file');
       configApp();
       break;
-//   case 'token':
-//   case 't':
-//       if(DEBUG) console.log(myArgs[0], ' - generate a user token');
-//       break;  
+  case 'token':
+  case 't':
+      if(DEBUG) console.log(myArgs[0], ' - generate a user token');
+      tokenApp();  
+      break;  
   case '--help':
   case '--h':
   default:
       console.log(allHelp);
-      displayInitConfigStatus();
-      
-
-
-}
+      displayInitConfigStatus();      
+};
 
