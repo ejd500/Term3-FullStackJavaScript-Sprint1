@@ -1,4 +1,4 @@
-global.DEBUG = false;
+global.DEBUG = true;
 
 const fs = require("fs");
 
@@ -43,7 +43,7 @@ if(DEBUG) if(myArgs.length >= 1) console.log('the index args = ', myArgs);
 switch (myArgs[0]) {
   case 'init':
   case 'i':
-      if(DEBUG) console.log(myArgs[0], ' - initialize the app.');
+      if(DEBUG) console.log(myArgs[0], ' - initialize the app');
       initializeApp();
       break;
   case 'config':
@@ -53,7 +53,7 @@ switch (myArgs[0]) {
       break;
   case 'token':
   case 't':
-      if(DEBUG) console.log(myArgs[0], ' - generate a user token');
+      if(DEBUG) console.log(myArgs[0], ' - generate, update, or search user tokens');
       tokenApp();  
       break;  
   case '--help':
