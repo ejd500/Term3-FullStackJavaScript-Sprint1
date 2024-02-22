@@ -14,15 +14,15 @@ const configjson = {
   database: 'exampledb'
 };
 
-// const tokenjson = [{
-//   created: '1969-01-31 12:30:00',
-//   username: 'username',
-//   email: 'user@example.com',
-//   phone: '5556597890',
-//   token: 'token',
-//   expires: '1969-02-03 12:30:00',
-//   confirmed: 'tbd'
-// }];
+const tokenjson = [{
+    created: '1969-01-31 12:30:00',
+    username: 'username',
+    email: 'user@example.com',
+    phone: '5556597890',
+    token: 'token',
+    expires: '1969-02-03 12:30:00',
+    confirmed: 'tbd'
+ }];
 
 const allHelp = `myapp <command> <option>
 
@@ -232,26 +232,24 @@ function createFiles() {
         console.log('token-help file already exists.');
         }
     
-    //   let tokendata = JSON.stringify(tokenjson, null, 2);
-    //   if(!fs.existsSync(path.join(__dirname, './json/token.json'))) {
-    //     fs.writeFile('./json/token.json', tokendata, (err) => {
-    //       if(err) {
-    //         console.log(err)
-    //       } else {
-    //         console.log('Data written to token file.');
-    //       }
-    //     }
-    //     );
-    // } else {
-    //   console.log('token file already exists.');
-    // }
-        setTimeout(()=>{
-            console.log("Create files complete.")
-        }, 3)
-        
-    } catch(err) {
-        console.log(err);
-    }
+        let tokendata = JSON.stringify(tokenjson, null, 2);
+            if(!fs.existsSync(path.join(__dirname, './json/tokens.json'))) {
+            fs.writeFile('./json/tokens.json', tokendata, (err) => {
+            if(err) {
+                console.log(err)
+            } else {
+                console.log('Data written to tokens file.');
+            }});
+        } else {
+        console.log('token file already exists.');
+        }
+            setTimeout(()=>{
+                console.log("Create files complete.")
+            }, 3)
+            
+        } catch(err) {
+            console.log(err);
+        }
 
 };
 
