@@ -60,7 +60,7 @@ async function newToken(username, phoneNum, email) {
 
             let existingUser = tokens.find(token => token.username === username);
             if (existingUser) {
-                throw new Error(`Username "${username}" already exists.`);
+                throw new Error(`Username "${username}" already exists`);
             }
 
             tokens.push(newToken);
@@ -71,7 +71,7 @@ async function newToken(username, phoneNum, email) {
             return newToken.token;
 
     }catch(error){
-        console.log('Error creating new token', error);
+        console.log('Error creating new token... ', error);
     };
 };
 
@@ -220,7 +220,7 @@ async function tokenApp() {
   
 module.exports = {
 tokenApp,
-newToken
+newToken,
 };
 
 

@@ -5,7 +5,7 @@
 }
 body{
     margin: 10px;
-    background-color:lightblue;
+    background-color:808080;
 }
 main{
     display: flex;
@@ -18,11 +18,12 @@ form{
     flex-direction: column;
     align-items: center;
     justify-content:space-between;
-    background-color: azure;
+    background-color: white;
     width: 50%;
     height: 100%;
     padding: 60px 40px;
     border-radius: 16px;
+    box-shadow: 0px 0px 30px rgba(0,0,0,0.3);
 }
 label{
     display: flex;
@@ -47,15 +48,23 @@ label{
     padding: 8px;
 }
 #submit{
-    background-color: midnightblue;
+    background-color:seagreen;
     color: white;
     border: none;
-    padding: 4px 12px;
+    padding: 8px 20px;
     border-radius: 4px;
+    font-size: 14pt;
+    margin-top:20px;
+}
+#submit:hover{
+    transform: translateY(-4px);
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.3);
 }
 #tokenDisplay{
-    color: green
+    color: seagreen;
+    text-align: center;
 }
 #errorDisplay{
-    color: red;
+    color: #cc0000;
+    text-align: center;
 }
