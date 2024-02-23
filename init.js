@@ -15,12 +15,12 @@ const configjson = {
 };
 
 const tokenjson = [{
-    created: '1969-01-31 12:30:00',
+    created: 'XXXX-XX-XX 00:00:00',
     username: 'username',
     email: 'user@example.com',
-    phone: '5556597890',
+    phone: 'XXX-XXX-XXXX',
     token: 'token',
-    expires: '1969-02-03 12:30:00',
+    expires: 'XXXX-XX-XX 00:00:00',
     confirmed: 'tbd'
  }];
 
