@@ -33,7 +33,7 @@ async function tokenCount() {
 };
 
 async function newToken(username, phoneNum, email) {
-    if (DEBUG) console.log('token.newToken()');
+//     if (DEBUG) console.log('token.newToken()');
     try{
         let newToken = JSON.parse(`{
                 "created": "XXXX-XX-XX 00:00:00",
@@ -50,12 +50,11 @@ async function newToken(username, phoneNum, email) {
         
             newToken.created = `${format(now, 'yyyy-MM-dd HH:mm:ss')}`;
             newToken.username = username;
+            newToken.email = email;
+            newToken.phoneNum = phoneNum;
             newToken.token = crc32(username).toString(16);
             newToken.expires = `${format(expires, 'yyyy-MM-dd HH:mm:ss')}`;
-
-            newToken.phoneNum = phoneNum;;
-            newToken.email = email;
-    
+            
             let data = await fs.readFile(__dirname + '/json/tokens.json', 'utf-8');
             let tokens = JSON.parse(data);
 
@@ -183,7 +182,7 @@ async function tokenApp() {
             break; 
     case '--new':
         if (myArgs.length < 3) {
-            console.log('invalid syntax. Usage: node myapp token --new [username][phone number] [email]');
+            console.log('invalid syntax. Usage: node myapp token --new [username] [phone number] [email]');
         }else {
             if(DEBUG) console.log('--new');
             newToken(myArgs[2], myArgs[3], myArgs[4]);
@@ -220,6 +219,8 @@ async function tokenApp() {
 };
   
 module.exports = {
-tokenApp};
+tokenApp,
+newToken
+};
 
 

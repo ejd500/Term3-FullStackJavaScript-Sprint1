@@ -20,7 +20,7 @@ form{
     justify-content:space-between;
     background-color: azure;
     width: 50%;
-    height: 70%;
+    height: 100%;
     padding: 60px 40px;
     border-radius: 16px;
 }
@@ -41,10 +41,21 @@ label{
     height: 30px;
     padding: 8px;
 }
+#phoneNum{
+    width: 100%;
+    height: 30px;
+    padding: 8px;
+}
 #submit{
     background-color: midnightblue;
     color: white;
     border: none;
     padding: 4px 12px;
     border-radius: 4px;
+}
+#tokenDisplay{
+    color: green
+}
+#errorDisplay{
+    color: red;
 }
