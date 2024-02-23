@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/index.css">
+
+</head>
+<body>
+    <main>
+        <form id="tokenForm">
+            <h2>
+                Fill out this form to receive a token...
+            </h2>
+            <label for="username">Enter your username: 
+                <input type="text" name="username" id="username">
+            </label>
+
+            <label for="email">Enter your email: 
+                <input type="text" name="email" id="email">
+            </label>
+
+            <label for="phoneNum">Enter your phone number: 
+                <input type="text" name="phoneNum" id="phoneNum">
+            </label>
+
+            <h2 id="tokenDisplay">
+                <%= token %>
+            </h2>
+            <h2 id="errorDisplay">
+                <%= errorDisplay %>
+            </h2>
+            
+            <input type="submit" value="Submit" id="submit">
+        
+        </form>
+    </main>
+
+    <!-- <script src="../public/js/index.js"></script> -->
+    
+</body>
+</html>
