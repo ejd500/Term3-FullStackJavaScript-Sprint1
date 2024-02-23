@@ -32,35 +32,44 @@ async function tokenCount() {
     };
 };
 
-async function newToken(username) {
+async function newToken(username, phoneNum, email) {
     if (DEBUG) console.log('token.newToken()');
-    let newToken = JSON.parse(`{
-            "created": "1969-01-31 12:30:00",
-            "username": "username",
-            "email": "user@example.com",
-            "phone": "5556597890",
-            "token": "token",
-            "expires": "1969-02-03 12:30:00",
-            "confirmed": "tbd"
-        }`);
-
     try{
-        let now = new Date();
-        let expires = addDays(now, 3);
+        let newToken = JSON.parse(`{
+                "created": "XXXX-XX-XX 00:00:00",
+                "username": "${username}",
+                "email": "${email}",
+                "phone": "${phoneNum}",
+                "token": "token",
+                "expires": "XXXX-XX-XX 00:00:00",
+                "confirmed": "tbd"
+            }`);
+            
+            let now = new Date();
+            let expires = addDays(now, 3);
+        
+            newToken.created = `${format(now, 'yyyy-MM-dd HH:mm:ss')}`;
+            newToken.username = username;
+            newToken.token = crc32(username).toString(16);
+            newToken.expires = `${format(expires, 'yyyy-MM-dd HH:mm:ss')}`;
+
+            newToken.phoneNum = phoneNum;;
+            newToken.email = email;
     
-        newToken.created = `${format(now, 'yyyy-MM-dd HH:mm:ss')}`;
-        newToken.username = username;
-        newToken.token = crc32(username).toString(16);
-        newToken.expires = `${format(expires, 'yyyy-MM-dd HH:mm:ss')}`;
-    
-        let data = await fs.readFile(__dirname + '/json/tokens.json', 'utf-8');
-        let tokens = JSON.parse(data);
-        tokens.push(newToken);
-        let userTokens = JSON.stringify(tokens);
-    
-        await fs.writeFile(__dirname + '/json/tokens.json', userTokens);
-        console.log(`New token ${newToken.token} created for ${username} is set to expire on ${expires}.`);
-        return newToken.token;
+            let data = await fs.readFile(__dirname + '/json/tokens.json', 'utf-8');
+            let tokens = JSON.parse(data);
+
+            let existingUser = tokens.find(token => token.username === username);
+            if (existingUser) {
+                throw new Error(`Username "${username}" already exists.`);
+            }
+
+            tokens.push(newToken);
+            let userTokens = JSON.stringify(tokens);
+        
+            await fs.writeFile(__dirname + '/json/tokens.json', userTokens);
+            console.log(`New token ${newToken.token} created for ${username} is set to expire on ${expires}.`);
+            return newToken.token;
 
     }catch(error){
         console.log('Error creating new token', error);
@@ -174,10 +183,10 @@ async function tokenApp() {
             break; 
     case '--new':
         if (myArgs.length < 3) {
-            console.log('invalid syntax. Usage: node myapp token --new [username]');
+            console.log('invalid syntax. Usage: node myapp token --new [username][phone number] [email]');
         }else {
             if(DEBUG) console.log('--new');
-            newToken(myArgs[2]);
+            newToken(myArgs[2], myArgs[3], myArgs[4]);
         };
         break;
     case '--upd':
@@ -192,7 +201,7 @@ async function tokenApp() {
     case '--search':
         const searchType = myArgs[2];
         if(myArgs.length <4 || (searchType !== 'u' && searchType !== 'p' && searchType !== 'e')) {
-            console.log ('invalid syntax. Usage: node myapp token --search [u/p/e] [alue]')
+            console.log ('invalid syntax. Usage: node myapp token --search [u/p/e] [value]')
         }else {        
             if (DEBUG) console.log (`--upd ${searchType}`)
             searchTokens(searchType, myArgs[3]);
