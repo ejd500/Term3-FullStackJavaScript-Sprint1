@@ -46,7 +46,7 @@ function configApp() {
 function displayConfig() {
     if(DEBUG) console.log('config.displayConfig()');
     fs.readFile(__dirname + "/json/config.json", (error, data) => {
-        if(error) throw error; // should write a log event for the error. 
+        if(error) throw error; 
         console.log(JSON.parse(data));
     });
 }
@@ -57,7 +57,7 @@ function resetConfig() {
     if(DEBUG) console.log(__dirname + './json/config.json');
     if(DEBUG) console.log(configdata);
     fs.writeFile(__dirname + '/json/config.json', configdata, (error) => {
-        if(error) throw error;   // Log an error event.
+        if(error) throw error;  
         if(DEBUG) console.log('Config file reset to original state');
      });
 }
@@ -84,12 +84,12 @@ function setConfig() {
                         if(DEBUG) console.log('Config file successfully updated.');
                     });
                 } else{
-                    console.log(`value "${myArgs[3]}" invalid, try another.`)
+                    console.log(`VALUE "${myArgs[3]}" invalid, try another.`)
                 }
             }
         }
         if(!match) {
-            console.log(`key "${myArgs[2]}" invalid, try again.`)
+            console.log(`KEY "${myArgs[2]}" invalid, try again.`)
        }
     });
 }

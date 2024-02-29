@@ -51,7 +51,7 @@ async function newToken(username, phoneNum, email) {
             newToken.created = `${format(now, 'yyyy-MM-dd HH:mm:ss')}`;
             newToken.username = username;
             newToken.email = email;
-            newToken.phoneNum = phoneNum;
+            newToken.phone = phoneNum;
             newToken.token = crc32(username).toString(16);
             newToken.expires = `${format(expires, 'yyyy-MM-dd HH:mm:ss')}`;
             
